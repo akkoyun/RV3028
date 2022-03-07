@@ -1,9 +1,24 @@
+#include <RV3028.h>
+
 void setup() {
-  // put your setup code here, to run once:
+
+	// Serial Communication Start
+	Serial.begin(115200);
+
+	// Header
+	Serial.println("       RTC Functions      ");
+	Serial.println("--------------------------");
 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+
+	// Get Minute
+  Serial.print("Minute : "); Serial.println(RTC.Get_Minute());
+  Serial.print("Second : "); Serial.println(RTC.Get_Second());
+
+
+	// Loop Delay
+	delay(1000);
 
 }

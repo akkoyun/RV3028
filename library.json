@@ -1,5 +1,5 @@
 {
-	"name": "<Library_Name>",
+	"name": "RV3028",
 	"version": "1.0.0",
 	"keywords": "<Library_Keywords>",
 	"description": "<Library_Description>",
@@ -11,7 +11,7 @@
 	},
 	"license": "MIT",
 	"frameworks": "arduino",
-	"headers": "<Library_Header_Name>.h",
+	"headers": "RV3028C7.h",
 	"platforms":
 	[
 		"atmelavr",
@@ -20,14 +20,14 @@
 	"repository":
 	{
 		"type": "git",
-		"url": "https://github.com/akkoyun/<Repo_Name>.git"
+		"url": "https://github.com/akkoyun/RV3028C7.git"
 	},
 	"examples": [
 		{
-			"name": "<Sample_Name>",
-			"base": "examples/<Sample_Folder>",
+			"name": "RV3028C7 test",
+			"base": "examples/test",
 			"files": [
-				"<Sample_Name>.ino"
+				"test.ino"
 			]
 		}
 	]
