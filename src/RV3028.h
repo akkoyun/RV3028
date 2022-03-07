@@ -23,19 +23,63 @@ class RV3028 {
 
 	public:
 
+		// Library Functions
+		void Begin(uint8_t _Mux_Channel);
+
+		// Get Time Functions
+		String Time_Stamp(void);
 		uint8_t Get_Second(void);
 		uint8_t Get_Minute(void);
 		uint8_t Get_Hour(void);
 		uint8_t Get_Week_Day(void);
 		uint8_t Get_Date(void);
 		uint8_t Get_Month(void);
-		uint8_t Get_Year(void);
+		uint16_t Get_Year(void);
+
+		// Get Time Functions
+		void Set_Time(uint8_t _Second, uint8_t _Minute, uint8_t _Hour, uint8_t _Date, uint8_t _Month, uint8_t _Year);
+		void Set_Second(uint8_t _Second);
+		void Set_Minute(uint8_t _Minute);
+		void Set_Hour(uint8_t _Hour);
+		void Set_Week_Day(uint8_t _Week_Day);
+		void Set_Date(uint8_t _Date);
+		void Set_Month(uint8_t _Month);
+		void Set_Year(uint8_t _Year);
+
+		// UNIX Time Functions
+		void Clear_UNIX_Time(void);
+		uint32_t Get_UNIX_Time(void);
+
+		// Timer Functions
+		void Enable_Timer(void);
+		void Disable_Timer(void);
+		void Set_Timer(bool _Repeat, uint16_t _Frequency, uint16_t _Value, bool _Interrupt, bool _Start, bool _Clock_Output);
+
+		// Calculate Functions
+		uint8_t Day_of_Week(uint8_t _Day, uint8_t _Month, uint16_t _Year);
 
 	private:
 
+		// Private Variables
+		uint8_t _I2C_Multiplexer_Channel = 0;
+
+		//
+		void Set_24h_Clock(void);
+		void Set_12h_Clock(void);
 		void Disable_Trickle_Charger(void);
+
+		// Control Functions
+		bool is_12h_Clock(void);
+
+		// Interrupt Functions
+		void Clear_Interrupt(void);
+		void Enable_Interrupt(void);
+		void Disable_Interrupt(void);
+		void Read_Timer_Interrupt_Flag(void);
+		void Clear_Timer_Interrupt_Flag(void);
+
 };
 
 extern RV3028 RTC;
 
-#endif /* defined(__RV3028C7__) */
+#endif /* defined(__RV3028__) */
