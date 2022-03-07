@@ -6,8 +6,8 @@
  *	Code Developer		: Mehmet Gunce Akkoyun (akkoyun@me.com)
  *********************************************************************************/
 
-#ifndef __RV3028C7__
-#define __RV3028C7__
+#ifndef __RV3028__
+#define __RV3028__
 
 // Define Arduino Library
 #ifndef __Arduino__
@@ -19,16 +19,23 @@
 #include <I2C_Functions.h>
 #endif
 
-class RV3028C7 {
+class RV3028 {
 
 	public:
 
-		bool Function(void);
+		uint8_t Get_Second(void);
+		uint8_t Get_Minute(void);
+		uint8_t Get_Hour(void);
+		uint8_t Get_Week_Day(void);
+		uint8_t Get_Date(void);
+		uint8_t Get_Month(void);
+		uint8_t Get_Year(void);
 
 	private:
-	
+
+		void Disable_Trickle_Charger(void);
 };
 
-extern RV3028C7 RTC;
+extern RV3028 RTC;
 
 #endif /* defined(__RV3028C7__) */
