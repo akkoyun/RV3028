@@ -1,6 +1,6 @@
 {
 	"name": "RV3028",
-	"version": "1.0.3",
+	"version": "1.0.4",
 	"keywords": "<Library_Keywords>",
 	"description": "<Library_Description>",
 	"authors":
@@ -24,11 +24,24 @@
 	},
 	"examples": [
 		{
-			"name": "RV3028C7 test",
-			"base": "examples/test",
-			"files": [
-				"test.ino"
-			]
+			"name": "Get Day of Week",
+			"base": "examples/Get_Day_of_Week",
+			"files": ["Get_Day_of_Week.ino"]
+		},
+		{
+			"name": "Get UNIX Time",
+			"base": "examples/Get_UNIX_Time",
+			"files": ["Get_UNIX_Time.ino"]
+		},
+		{
+			"name": "RTC Timer",
+			"base": "examples/RTC_Timer",
+			"files": ["RTC_Timer.ino"]
+		},
+		{
+			"name": "Set RTC",
+			"base": "examples/Set_RTC",
+			"files": ["Set_RTC.ino"]
 		}
 	]
 }
