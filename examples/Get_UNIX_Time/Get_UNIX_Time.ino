@@ -1,4 +1,4 @@
-#include <RV3028.h>
+#include "RV3028.h"
 
 void setup() {
 
@@ -9,16 +9,20 @@ void setup() {
 	Serial.println("       RTC Functions      ");
 	Serial.println("--------------------------");
 
+    // Start RTC
+	RTC.Begin(1);
+
+    // Clear UNIX
+    RTC.Clear_UNIX_Time();
+
 }
 
 void loop() {
 
-	// Get Minute
-  Serial.print("Minute : "); Serial.println(RTC.Get_Minute());
-  Serial.print("Second : "); Serial.println(RTC.Get_Second());
+	// Get Time
+	Serial.println(RTC.Get_UNIX_Time());
 
-
-	// Loop Delay
-	delay(1000);
+    // Wait
+    delay(1);
 
 }
