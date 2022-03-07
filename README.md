@@ -1,9 +1,9 @@
-# Statistical Library <sup>V1.4</sup>
+# RV-3028-C7 Library <sup>V1.0</sup>
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/akkoyun/Statistical) ![arduino-library-badge](https://www.ardu-badge.com/badge/Statistical.svg?) ![Visits Badge](https://badges.pufler.dev/visits/akkoyun/Statistical) ![GitHub stars](https://img.shields.io/github/stars/akkoyun/Statistical?style=flat&logo=github) ![Updated Badge](https://badges.pufler.dev/updated/akkoyun/Statistical) ![PlatformIO Registry](https://badges.registry.platformio.org/packages/akkoyun/library/Statistical.svg) 
-[![Check Arduino](https://github.com/akkoyun/Statistical/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/akkoyun/Statistical/actions/workflows/check-arduino.yml) [![Compile Examples](https://github.com/akkoyun/Statistical/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/akkoyun/Statistical/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/akkoyun/Statistical/actions/workflows/spell-check.yml/badge.svg)](https://github.com/akkoyun/Statistical/actions/workflows/spell-check.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/akkoyun/RV3028C7) ![arduino-library-badge](https://www.ardu-badge.com/badge/RV3028C7.svg?) ![Visits Badge](https://badges.pufler.dev/visits/akkoyun/RV3028C7) ![GitHub stars](https://img.shields.io/github/stars/akkoyun/RV3028C7?style=flat&logo=github) ![Updated Badge](https://badges.pufler.dev/updated/akkoyun/RV3028C7) ![PlatformIO Registry](https://badges.registry.platformio.org/packages/akkoyun/library/RV3028C7.svg) 
+[![Check Arduino](https://github.com/akkoyun/RV3028C7/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/akkoyun/RV3028C7/actions/workflows/check-arduino.yml) [![Compile Examples](https://github.com/akkoyun/RV3028C7/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/akkoyun/RV3028C7/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/akkoyun/RV3028C7/actions/workflows/spell-check.yml/badge.svg)](https://github.com/akkoyun/RV3028C7/actions/workflows/spell-check.yml)
 
-	Build - 01.04.12
+	Build - 01.00.00
 
 ---
 
