@@ -9,13 +9,7 @@
 #include "RV3028.h"
 
 // Library Functions
-void RV3028::Begin(uint8_t _Mux_Channel) {
-
-	// Multiplexer Set
-	if (_Mux_Channel != 0) {
-		I2C.Set_Multiplexer(I2C.TCA9548.I2C_Address, _Mux_Channel);
-		_I2C_Multiplexer_Channel = _Mux_Channel;
-	}
+bool RV3028::Begin(void) {
 
 	// Ticke Charger Disable
 	Disable_Trickle_Charger();
@@ -23,13 +17,13 @@ void RV3028::Begin(uint8_t _Mux_Channel) {
 	// Set 24h Format
 	if (is_12h_Clock()) Set_24h_Clock();
 
+	// Clear UNIX Time
+	Clear_UNIX_Time();
+
 }
 
 // Get Time Variables
 String RV3028::Time_Stamp(void) {
-
-	// Multiplexer Set
-	if (_I2C_Multiplexer_Channel != 0) I2C.Set_Multiplexer(I2C.TCA9548.I2C_Address, _I2C_Multiplexer_Channel);
 
 	// Declare Timestamp Variable
 	char _Time_Stamp[25];	// dd-mm-yyyy hh.mm.ss
@@ -332,9 +326,6 @@ void RV3028::Disable_Timer(void) {
 
 }
 void RV3028::Set_Timer(bool _Repeat, uint16_t _Frequency, uint16_t _Value, bool _Interrupt, bool _Start, bool _Clock_Output) {
-
-	// Multiplexer Set
-	if (_I2C_Multiplexer_Channel != 0) I2C.Set_Multiplexer(I2C.TCA9548.I2C_Address, _I2C_Multiplexer_Channel);
 
 	// Disable Timer
 	Disable_Timer();

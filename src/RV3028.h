@@ -24,7 +24,7 @@ class RV3028 {
 	public:
 
 		// Library Functions
-		void Begin(uint8_t _Mux_Channel);
+		bool Begin(void);
 
 		// Get Time Functions
 		String Time_Stamp(void);
@@ -59,9 +59,6 @@ class RV3028 {
 		uint8_t Day_of_Week(uint8_t _Day, uint8_t _Month, uint16_t _Year);
 
 	private:
-
-		// Private Variables
-		uint8_t _I2C_Multiplexer_Channel = 0;
 
 		//
 		void Set_24h_Clock(void);
