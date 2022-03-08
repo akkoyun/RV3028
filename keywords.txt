@@ -5,12 +5,35 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
+RTC							KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
+Begin						KEYWORD2
+Time_Stamp					KEYWORD2
+Get_Second					KEYWORD2
+Get_Minute					KEYWORD2
+Get_Hour					KEYWORD2
+Get_Week_Day				KEYWORD2
+Get_Date					KEYWORD2
+Get_Month					KEYWORD2
+Get_Year					KEYWORD2
+Set_Time					KEYWORD2
+Set_Second					KEYWORD2
+Set_Minute					KEYWORD2
+Set_Hour					KEYWORD2
+Set_Week_Day				KEYWORD2
+Set_Date					KEYWORD2
+Set_Month					KEYWORD2
+Set_Year					KEYWORD2
+Clear_UNIX_Time				KEYWORD2
+Get_UNIX_Time				KEYWORD2
+Enable_Timer				KEYWORD2
+Disable_Timer				KEYWORD2
+Set_Timer					KEYWORD2
+Day_of_Week					KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
-

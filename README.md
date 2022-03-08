@@ -3,11 +3,34 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/akkoyun/RV3028C7) ![arduino-library-badge](https://www.ardu-badge.com/badge/RV3028C7.svg?) ![Visits Badge](https://badges.pufler.dev/visits/akkoyun/RV3028C7) ![GitHub stars](https://img.shields.io/github/stars/akkoyun/RV3028C7?style=flat&logo=github) ![Updated Badge](https://badges.pufler.dev/updated/akkoyun/RV3028C7) ![PlatformIO Registry](https://badges.registry.platformio.org/packages/akkoyun/library/RV3028C7.svg) 
 [![Check Arduino](https://github.com/akkoyun/RV3028C7/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/akkoyun/RV3028C7/actions/workflows/check-arduino.yml) [![Compile Examples](https://github.com/akkoyun/RV3028C7/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/akkoyun/RV3028C7/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/akkoyun/RV3028C7/actions/workflows/spell-check.yml/badge.svg)](https://github.com/akkoyun/RV3028C7/actions/workflows/spell-check.yml)
 
-	Build - 01.00.04
+	Build - 01.00.05
 
 ---
 
- Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+**Abstract**
+
+RV-3028-C7 is a SMT Real-Time Clock Module that incorporates an integrated CMOS circuit together with an XTAL. It operates under vacuum in a hermetically sealed ceramic package with metal lid.
+
+The RV-3028-C7  real-time clock/calendar module with an automatic backup power switchover circuit is optimized for extreme low power consumption. It provides full RTC function with programmable counters, alarm, selectable interrupt and clock output functions and also a 32-bit UNIX Time counter. The internal EEPROM memory hosts all configuration settings and allows for additional user memory. An EEPROM Offset value allows compensating the frequency deviation of the 32.768 kHz clock.
+
+This ultra small RTC module has been specially designed for miniature and cost sensitive high volume applications.
+
+**Features**
+
+* Extreme low power consumption: 45 nA @ 3 V
+* Wide operating voltage range: 1.1 V to 5.5 V
+* Time accuracy: Factory calibrated to ±1 ppm @ 25°C
+* Backup Switch and Trickle Charge
+* Provides year, month, date, weekday, hours, minutes and seconds
+* 32 bit UNIX time counter
+* External event input detection with time stamping
+* 43 bytes non-volatile user memory, 2 bytes user RAM
+* I²C-bus interface: 400 kHz
+* Automotive qualification according to AEC-Q200 available
+
+**Block Diagram**
+
+<center><img src="/Documents/images/Blockdiagram.png" width="600"></center></br>
 
 ---
 
