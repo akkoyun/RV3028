@@ -10,7 +10,7 @@ void setup() {
 	Serial.println("--------------------------");
 
     // Start RTC
-	RTC.Begin(1);
+	RTC.Begin();
 
     // Set Time
     RTC.Set_Time(0,0,18,2,1,21);

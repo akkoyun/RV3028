@@ -10,7 +10,7 @@ void setup() {
 	Serial.println("--------------------------");
 
     // Start RTC
-	RTC.Begin(1);
+	RTC.Begin();
 
     // Clear UNIX
     RTC.Clear_UNIX_Time();
