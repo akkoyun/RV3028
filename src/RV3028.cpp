@@ -11,14 +11,27 @@
 // Library Functions
 bool RV3028::Begin(void) {
 
-	// Ticke Charger Disable
-	Disable_Trickle_Charger();
+	// Control for Device
+	if (I2C.Control_Device(I2C.RV3028C7.I2C_Address)) {
 
-	// Set 24h Format
-	if (is_12h_Clock()) Set_24h_Clock();
+		// Ticke Charger Disable
+		Disable_Trickle_Charger();
 
-	// Clear UNIX Time
-	Clear_UNIX_Time();
+		// Set 24h Format
+		if (is_12h_Clock()) Set_24h_Clock();
+
+		// Clear UNIX Time
+		Clear_UNIX_Time();
+
+		// End Function
+		return(true);
+
+	} else {
+
+		// End Function
+		return(false);
+
+	}
 
 }
 
