@@ -13,15 +13,15 @@ void setup() {
 	Serial.println("--------------------------");
 
     // Start RTC
-	RTC.Begin(1);
+	RTC.Begin();
 
     // Set Timer
     RTC.Set_Timer(false, 1, 10, true, true, true);
 
-	// Interupt Definations
+	// Interrupt Definitions
 	cli();
 	PCICR	|= 0b00000111;	// Set All Interrupt
-	PCMSK0	|= 0b00010000;	// Timer Interupt Definations
+	PCMSK0	|= 0b00010000;	// Timer Interrupt Definitions
 	sei();
 
 }

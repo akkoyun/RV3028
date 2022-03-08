@@ -9,7 +9,7 @@ void setup() {
 	Serial.println("       RTC Functions      ");
 	Serial.println("--------------------------");
 
-	RTC.Begin(1);
+	RTC.Begin();
 
 }
 
