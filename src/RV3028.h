@@ -38,13 +38,6 @@ class RV3028 {
 
 		// Get Time Functions
 		void Set_Time(uint8_t _Second, uint8_t _Minute, uint8_t _Hour, uint8_t _Date, uint8_t _Month, uint8_t _Year);
-		void Set_Second(uint8_t _Second);
-		void Set_Minute(uint8_t _Minute);
-		void Set_Hour(uint8_t _Hour);
-		void Set_Week_Day(uint8_t _Week_Day);
-		void Set_Date(uint8_t _Date);
-		void Set_Month(uint8_t _Month);
-		void Set_Year(uint8_t _Year);
 
 		// UNIX Time Functions
 		void Clear_UNIX_Time(void);

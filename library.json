@@ -1,6 +1,6 @@
 {
 	"name": "RV3028",
-	"version": "1.0.8",
+	"version": "1.0.9",
 	"keywords": "RV3028, RTC, Timer, UNIX, Clock, Alarm, Calendar, Counter, I2C",
 	"description": "Basic library for the RV-3028-C7 RTC",
 	"authors":

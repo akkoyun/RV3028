@@ -12,6 +12,9 @@ void setup() {
 	Serial.println("       RTC Functions      ");
 	Serial.println("--------------------------");
 
+	// Set I2C Multiplexer
+	I2C.Set_Multiplexer(I2C.TCA9548.I2C_Address ,1);
+
     // Start RTC
 	RTC.Begin();
 
@@ -41,7 +44,7 @@ void loop() {
     	Serial.println(RTC.Time_Stamp());
 
         // Set Timer
-        RTC.Set_Timer(false, 1, 10, true, true, true);
+	    RTC.Set_Timer(false, 1, 10, true, true, true);
 
         // Set Variable
         RTC_Interrupt = false;
