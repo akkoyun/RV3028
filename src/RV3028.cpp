@@ -42,7 +42,7 @@ String RV3028::Time_Stamp(void) {
 	char _Time_Stamp[25];	// dd-mm-yyyy hh.mm.ss
 
 	// Handle TimeStamp
-	sprintf(_Time_Stamp, "%02hhu-%02hhu-%02hhu  %02hhu:%02hhu:%02hhu", Get_Date(), Get_Month(), Get_Year(), Get_Hour(), Get_Minute(), Get_Second());
+	sprintf(_Time_Stamp, "%02hhu-%02hhu-%02hhu  %02hhu:%02hhu:%02hhu", Get_Year(), Get_Month(), Get_Date(), Get_Hour(), Get_Minute(), Get_Second());
 
 	// End Function
 	return(_Time_Stamp);
@@ -115,71 +115,17 @@ uint16_t RV3028::Get_Year(void) {
 // Set Time Variables
 void RV3028::Set_Time(uint8_t _Second, uint8_t _Minute, uint8_t _Hour, uint8_t _Date, uint8_t _Month, uint8_t _Year) {
 
-	// Set Year
-	Set_Year(_Year);
-
-	// Set Month
-	Set_Month(_Month);
-
-	// Set Day
-	Set_Date(_Date);
-
 	// Calculate Day of Week
 	uint8_t _DayofWeek = Day_of_Week(_Date, _Month, _Year);
 
-	// Set Day of Week
-	Set_Week_Day(_DayofWeek);
-
-	// Set Hour
-	Set_Hour(_Hour);
-
-	// Set Minute
-	Set_Minute(_Minute);
-
-	// Set Second
-	Set_Second(_Second);
-
-}
-void RV3028::Set_Second(uint8_t _Second) {
-
-	// Write Register
-	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Seconds__, I2C.DECtoBCD(_Second), true);
-
-}
-void RV3028::Set_Minute(uint8_t _Minute) {
-
-	// Write Register
-	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Minutes__, I2C.DECtoBCD(_Minute), true);
-
-}
-void RV3028::Set_Hour(uint8_t _Hour) {
-
-	// Write Register
-	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Hours__, I2C.DECtoBCD(_Hour), true);
-
-}
-void RV3028::Set_Week_Day(uint8_t _Week_Day) {
-
-	// Write Register
-	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Week_Day__, I2C.DECtoBCD(_Week_Day), true);
-
-}
-void RV3028::Set_Date(uint8_t _Date) {
-
-	// Write Register
-	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Date__, I2C.DECtoBCD(_Date), true);
-
-}
-void RV3028::Set_Month(uint8_t _Month) {
-
-	// Write Register
-	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Month__, I2C.DECtoBCD(_Month), true);
-
-}
-void RV3028::Set_Year(uint8_t _Year) {
-
-	// Write Register
+	// Set Time
 	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Year__, I2C.DECtoBCD(_Year), true);
+	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Month__, I2C.DECtoBCD(_Month), true);
+	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Date__, I2C.DECtoBCD(_Date), true);
+	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Week_Day__, I2C.DECtoBCD(_DayofWeek), true);
+	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Hours__, I2C.DECtoBCD(_Hour), true);
+	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Minutes__, I2C.DECtoBCD(_Minute), true);
+	I2C.Write_Register(I2C.RV3028C7.I2C_Address, __RV3028_Seconds__, I2C.DECtoBCD(_Second), true);
 
 }
 
@@ -303,13 +249,13 @@ void RV3028::Clear_Interrupt(void) {
 void RV3028::Enable_Interrupt(void) {
 
 	// Reset Register
-	I2C.Set_Register_Bit(I2C.RV3028C7.I2C_Address, __RV3028_Status__, 4, true);
+	I2C.Set_Register_Bit(I2C.RV3028C7.I2C_Address, __RV3028_Control2__, 4, true);
 
 }
 void RV3028::Disable_Interrupt(void) {
 
 	// Reset Register
-	I2C.Clear_Register_Bit(I2C.RV3028C7.I2C_Address, __RV3028_Status__, 4, true);
+	I2C.Clear_Register_Bit(I2C.RV3028C7.I2C_Address, __RV3028_Control2__, 4, true);
 
 }
 void RV3028::Read_Timer_Interrupt_Flag(void) {
@@ -393,7 +339,7 @@ void RV3028::Set_Timer(bool _Repeat, uint16_t _Frequency, uint16_t _Value, bool 
 
 	// Clock Out
 	if (_Clock_Output) I2C.Set_Register_Bit(I2C.RV3028C7.I2C_Address, __RV3028_INT_Mask__, 1, true);
-	if (_Clock_Output) I2C.Clear_Register_Bit(I2C.RV3028C7.I2C_Address, __RV3028_INT_Mask__, 1, true);
+	if (!_Clock_Output) I2C.Clear_Register_Bit(I2C.RV3028C7.I2C_Address, __RV3028_INT_Mask__, 1, true);
 
 }
 
