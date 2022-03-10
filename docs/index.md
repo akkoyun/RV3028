@@ -3,7 +3,7 @@
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/akkoyun/RV3028) ![arduino-library-badge](https://www.ardu-badge.com/badge/RV3028.svg?) ![Visits Badge](https://badges.pufler.dev/visits/akkoyun/RV3028) ![GitHub stars](https://img.shields.io/github/stars/akkoyun/RV3028?style=flat&logo=github) ![Updated Badge](https://badges.pufler.dev/updated/akkoyun/RV3028) ![PlatformIO Registry](https://badges.registry.platformio.org/packages/akkoyun/library/RV3028.svg) 
 [![Check Arduino](https://github.com/akkoyun/RV3028/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/akkoyun/RV3028/actions/workflows/check-arduino.yml) [![Compile Examples](https://github.com/akkoyun/RV3028/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/akkoyun/RV3028/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/akkoyun/RV3028/actions/workflows/spell-check.yml/badge.svg)](https://github.com/akkoyun/RV3028/actions/workflows/spell-check.yml)
 
-	Build - 01.00.09
+	Build - 01.00.11
 
 ---
 
@@ -30,7 +30,7 @@ This ultra small RTC module has been specially designed for miniature and cost s
 
 **Block Diagram**
 
-<center><img src="/Documents/images/Blockdiagram.png" width="600"></center></br>
+<center><img src="https://github.com/akkoyun/RV3028/blob/main/Documents/images/Blockdiagram.png?raw=true" width="600"></center></br>
 
 ---
 
