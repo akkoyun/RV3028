@@ -13,7 +13,7 @@ void setup() {
 	Serial.println("--------------------------");
 
 	// Set I2C Multiplexer
-	I2C.Set_Multiplexer(I2C.TCA9548.I2C_Address ,1);
+	I2C.Set_Multiplexer(__I2C__TCA9548__Addr__ ,1);
 
     // Start RTC
 	RTC.Begin();

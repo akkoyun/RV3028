@@ -27,14 +27,14 @@ class RV3028 {
 		bool Begin(void);
 
 		// Get Time Functions
-		String Time_Stamp(void);
+		char * Time_Stamp(void);
 		uint8_t Get_Second(void);
 		uint8_t Get_Minute(void);
 		uint8_t Get_Hour(void);
 		uint8_t Get_Week_Day(void);
 		uint8_t Get_Date(void);
 		uint8_t Get_Month(void);
-		uint16_t Get_Year(void);
+		uint8_t Get_Year(void);
 
 		// Get Time Functions
 		void Set_Time(uint8_t _Second, uint8_t _Minute, uint8_t _Hour, uint8_t _Date, uint8_t _Month, uint8_t _Year);
