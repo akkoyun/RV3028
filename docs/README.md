@@ -30,7 +30,7 @@ This ultra small RTC module has been specially designed for miniature and cost s
 
 **Block Diagram**
 
-<center><img src="/Documents/images/Blockdiagram.png" width="600"></center></br>
+<center><img src="https://github.com/akkoyun/RV3028/blob/main/Documents/images/Blockdiagram.png?raw=true" width="600"></center></br>
 
 ---
 
