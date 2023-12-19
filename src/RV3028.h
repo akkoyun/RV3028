@@ -158,19 +158,21 @@
 
 			}
 
-			// Enable Interrupt Function
-			void Enable_Interrupt(void) {
+			// Interrupt State Function
+			void Interrupt(bool _State) {
 
-				// Set Register Bit
-				I2C_Functions::Set_Register_Bit(0x10, 4, true);
+				// Control for State
+				if (_State) {
 
-			}
+					// Set Register Bit
+					I2C_Functions::Set_Register_Bit(0x10, 4, true);
 
-			// Disable Interrupt Function
-			void Disable_Interrupt(void) {
-				
-				// Clear Register Bit
-				I2C_Functions::Clear_Register_Bit(0x10, 4, true);
+				} else {
+
+					// Clear Register Bit
+					I2C_Functions::Clear_Register_Bit(0x10, 4, true);
+
+				}
 
 			}
 
@@ -219,6 +221,9 @@
 
 					// Ticke Charger Disable
 					this->Disable_Trickle_Charger();
+
+					// Set Clock Out
+					this->Clock_Out(true);
 
 					// Set 24h Format
 					if (this->is_12h_Clock()) this->Set_24h_Clock();
@@ -371,19 +376,32 @@
 
 			}
 
-			// Enable Timer Functions
-			void Enable_Timer(void) {
+			// Set Clock Output Functions
+			void Clock_Out(bool _State = true) {
 
-				// Set Bit
-				I2C_Functions::Set_Register_Bit(0x0F, 2, true);
+				// Read 35h Register
+				uint8_t _Register_35h = I2C_Functions::Read_Register(0x35);
 
-			}
+				// Control for State
+				if (_State) {
 
-			// Disable Timer Functions
-			void Disable_Timer(void) {
-				
-				// Clear Bit
-				I2C_Functions::Clear_Register_Bit(0x0F, 2, true);
+					// Set CLKOE Bit
+					bitSet(_Register_35h, 7);
+
+					// Set 1Hz Output
+					bitSet(_Register_35h, 2);
+					bitSet(_Register_35h, 0);
+					bitClear(_Register_35h, 1);
+
+				} else {
+
+					// Clear CLKOE Bit
+					bitClear(_Register_35h, 7);
+
+				}
+			
+				// Write 35h Register
+				I2C_Functions::Write_Register(0x35, _Register_35h, true);
 
 			}
 
@@ -391,10 +409,10 @@
 			void Set_Timer(const bool _Repeat, const uint16_t _Frequency, const uint16_t _Value, const bool _Interrupt, const bool _Start, const bool _Clock_Output) {
 
 				// Disable Timer
-				this->Disable_Timer();
+				this->Timer(false);
 
 				// Disable Interrupt
-				this->Disable_Interrupt();
+				this->Interrupt(false);
 
 				// Clear Interrupt Flag
 				this->Clear_Timer_Interrupt_Flag();
@@ -433,7 +451,7 @@
 				}
 
 				// Set Interrupt
-				if (_Interrupt) this->Enable_Interrupt();
+				if (_Interrupt) this->Interrupt(true);
 
 				// Start Timer
 				if (_Start) _CONTROL1 |= (1 << 2);
@@ -454,6 +472,24 @@
 
 				}
 				
+			}
+
+			// Enable Timer Functions
+			void Timer(bool _Status) {
+
+				// Control for Status
+				if (_Status) {
+
+					// Set Bit
+					I2C_Functions::Set_Register_Bit(0x0F, 2, true);
+
+				} else {
+
+					// Clear Bit
+					I2C_Functions::Clear_Register_Bit(0x0F, 2, true);
+
+				}
+
 			}
 
 			// Write EEPROM Functions
