@@ -24,6 +24,9 @@
 		#define __I2C_Addr_RV3028C7__		(uint8_t)0x52
 	#endif
 
+	// Include EEPROM Definitions
+	#include "EEPROM.h"
+
 	// RV3028 Class
 	class RV3028 : private I2C_Functions {
 
@@ -561,6 +564,92 @@
 				return(_Register);
 
 			}
+
+
+			// Read PUBLISH Register from EEPROM Function
+			uint32_t Read_Publish_Register(void) {
+				
+				// Declare Variables
+				uint32_t _Publish_Register = 0x00000000;
+
+				// Read EEPROM
+				uint8_t _Publish_Register_MSB_2 = this->Read_EEPROM(__EEPROM_PUBLISH_MASK_MSB_2__);
+				uint8_t _Publish_Register_MSB_1 = this->Read_EEPROM(__EEPROM_PUBLISH_MASK_MSB_1__);
+				uint8_t _Publish_Register_LSB_2 = this->Read_EEPROM(__EEPROM_PUBLISH_MASK_LSB_2__);
+				uint8_t _Publish_Register_LSB_1 = this->Read_EEPROM(__EEPROM_PUBLISH_MASK_LSB_1__);
+
+				// Control for EEPROM
+				if (_Publish_Register_MSB_2 == 0x00 and _Publish_Register_MSB_1 == 0x00 and _Publish_Register_LSB_2 == 0x00 and _Publish_Register_LSB_1 == 0x00) {
+
+					// Define Default Values
+					uint8_t _Publish_Register_Default_MSB_2 = ((__PUBLISH_REGISTER_DEFAULT__ >> 24) & 0xFF);
+					uint8_t _Publish_Register_Default_MSB_1 = ((__PUBLISH_REGISTER_DEFAULT__ >> 16) & 0xFF);
+					uint8_t _Publish_Register_Default_LSB_2 = ((__PUBLISH_REGISTER_DEFAULT__ >> 8) & 0xFF);
+					uint8_t _Publish_Register_Default_LSB_1 = ((__PUBLISH_REGISTER_DEFAULT__ >> 0) & 0xFF);
+
+					// Set Default Value
+					this->Write_EEPROM(__EEPROM_PUBLISH_MASK_MSB_2__, _Publish_Register_Default_MSB_2);
+					this->Write_EEPROM(__EEPROM_PUBLISH_MASK_MSB_1__, _Publish_Register_Default_MSB_1);
+					this->Write_EEPROM(__EEPROM_PUBLISH_MASK_LSB_2__, _Publish_Register_Default_LSB_2);
+					this->Write_EEPROM(__EEPROM_PUBLISH_MASK_LSB_1__, _Publish_Register_Default_LSB_1);
+
+					// Set Default Value
+					_Publish_Register = __PUBLISH_REGISTER_DEFAULT__;
+
+				} else {
+
+					// Set Default Value
+					_Publish_Register = (((uint32_t)_Publish_Register_MSB_2 << 24) | ((uint32_t)_Publish_Register_MSB_1 << 16) | ((uint32_t)_Publish_Register_LSB_2 << 8) | (uint32_t)_Publish_Register_LSB_1);
+
+				}
+
+				// Return Value
+				return _Publish_Register;
+
+			}
+
+			// Read STOP Register from EEPROM Function
+			uint32_t Read_Stop_Register(void) {
+				
+				// Declare Variables
+				uint32_t _Stop_Register = 0x00000000;
+
+				// Read EEPROM
+				uint8_t _Stop_Register_MSB_2 = this->Read_EEPROM(__EEPROM_STOP_MASK_MSB_2__);
+				uint8_t _Stop_Register_MSB_1 = this->Read_EEPROM(__EEPROM_STOP_MASK_MSB_1__);
+				uint8_t _Stop_Register_LSB_2 = this->Read_EEPROM(__EEPROM_STOP_MASK_LSB_2__);
+				uint8_t _Stop_Register_LSB_1 = this->Read_EEPROM(__EEPROM_STOP_MASK_LSB_1__);
+
+				// Control for EEPROM
+				if (_Stop_Register_MSB_2 == 0x00 and _Stop_Register_MSB_1 == 0x00 and _Stop_Register_LSB_2 == 0x00 and _Stop_Register_LSB_1 == 0x00) {
+
+					// Define Default Values
+					uint8_t _Stop_Register_Default_MSB_2 = ((__STOP_REGISTER_DEFAULT__ >> 24) & 0xFF);
+					uint8_t _Stop_Register_Default_MSB_1 = ((__STOP_REGISTER_DEFAULT__ >> 16) & 0xFF);
+					uint8_t _Stop_Register_Default_LSB_2 = ((__STOP_REGISTER_DEFAULT__ >> 8) & 0xFF);
+					uint8_t _Stop_Register_Default_LSB_1 = ((__STOP_REGISTER_DEFAULT__ >> 0) & 0xFF);
+
+					// Set Default Value
+					this->Write_EEPROM(__EEPROM_STOP_MASK_MSB_2__, _Stop_Register_Default_MSB_2);
+					this->Write_EEPROM(__EEPROM_STOP_MASK_MSB_1__, _Stop_Register_Default_MSB_1);
+					this->Write_EEPROM(__EEPROM_STOP_MASK_LSB_2__, _Stop_Register_Default_LSB_2);
+					this->Write_EEPROM(__EEPROM_STOP_MASK_LSB_1__, _Stop_Register_Default_LSB_1);
+
+					// Set Default Value
+					_Stop_Register = __PUBLISH_REGISTER_DEFAULT__;
+
+				} else {
+
+					// Set Default Value
+					_Stop_Register = (((uint32_t)_Stop_Register_MSB_2 << 24) | ((uint32_t)_Stop_Register_MSB_1 << 16) | ((uint32_t)_Stop_Register_LSB_2 << 8) | (uint32_t)_Stop_Register_LSB_1);
+
+				}
+
+				// Return Value
+				return _Stop_Register;
+
+			}
+
 
 	};
 
