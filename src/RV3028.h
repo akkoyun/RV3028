@@ -636,7 +636,7 @@
 					this->Write_EEPROM(__EEPROM_STOP_MASK_LSB_1__, _Stop_Register_Default_LSB_1);
 
 					// Set Default Value
-					_Stop_Register = __PUBLISH_REGISTER_DEFAULT__;
+					_Stop_Register = __STOP_REGISTER_DEFAULT__;
 
 				} else {
 
