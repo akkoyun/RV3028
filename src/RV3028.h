@@ -2,12 +2,16 @@
  *  Copyright (C) 2014-2023 Mehmet Gunce Akkoyun Can not be copied and/or
  *	distributed without the express permission of Mehmet Gunce Akkoyun.
  *
- *	Library				: RV3028C7 RTC Linbrary
+ *	Library				: RV3028C7 RTC Library
  *	Code Developer		: Mehmet Gunce Akkoyun (akkoyun@me.com)
  *********************************************************************************/
 
 #ifndef __RV3028__
 #define __RV3028__
+
+	// Define Constants
+	#define READ		false
+	#define WRITE		true
 
 	// Define Arduino Library
 	#ifndef __Arduino__
@@ -18,14 +22,6 @@
 	#ifndef __I2C_Functions__
 		#include <I2C_Functions.h>
 	#endif
-
-	// Define RV3028C7 Address
-	#ifndef __I2C_Addr_RV3028C7__
-		#define __I2C_Addr_RV3028C7__		(uint8_t)0x52
-	#endif
-
-	// Include EEPROM Definitions
-	#include "EEPROM.h"
 
 	// RV3028 Class
 	class RV3028 : private I2C_Functions {
@@ -53,16 +49,102 @@
 			uint8_t BCDtoDEC(uint8_t _Value) {
 
 				// End Function
-				return ((_Value / 0x10) * 10) + (_Value % 0x10);
+				return (_Value >> 4) * 10 + (_Value & 0x0F);
 
 			}
 
 			// BCDtoDEC -- convert decimal to binary-coded decimal (BCD)
 			uint8_t DECtoBCD(uint8_t _Value) {
-				
+
+				// Calculate the tens digit
+				uint8_t _Tens = _Value / 10;
+
+				// Calculate the ones digit
+				uint8_t _Ones = _Value % 10;
+
+				// Combine the tens and ones digits into BCD format
+				uint8_t _BCD_Value = (_Tens << 4) | _Ones;
+
+				// Return the BCD value
+				return _BCD_Value;
+
+			}
+
+			// Get Second Functions
+			uint8_t Get_Second(void) {
+
+				// Read Register
+				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x00));
+
 				// End Function
-				return ((_Value / 10) * 0x10) + (_Value % 10);
-			
+				return (_Data);
+
+			}
+
+			// Get Minute Functions
+			uint8_t Get_Minute(void) {
+
+				// Read Register
+				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x01));
+
+				// End Function
+				return (_Data);
+
+			}
+
+			// Get Hour Functions
+			uint8_t Get_Hour(void) {
+
+				// Read Register
+				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x02));
+
+				// End Function
+				return (_Data);
+
+			}
+
+			// Get Week Day Functions
+			uint8_t Get_Week_Day(void) {
+
+				// Read Register
+				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x03));
+
+				// End Function
+				return (_Data);
+
+			}
+
+			// Get Date Functions
+			uint8_t Get_Date(void) {
+
+				// Read Register
+				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x04));
+
+				// End Function
+				return (_Data);
+
+			}
+
+			// Get Month Functions
+			uint8_t Get_Month(void) {
+
+				// Read Register
+				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x05));
+
+				// End Function
+				return (_Data);
+
+			}
+
+			// Get Year Functions
+			uint8_t Get_Year(void) {
+
+				// Read Register
+				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x06));
+
+				// End Function
+				return (_Data);
+
 			}
 
 			// Calculate Day of Week
@@ -229,7 +311,7 @@
 					this->Clock_Out(true);
 
 					// Set 24h Format
-					if (this->is_12h_Clock()) this->Set_24h_Clock();
+					this->Set_24h_Clock();
 
 					// Clear UNIX Time
 					this->Clear_UNIX_Time();
@@ -243,83 +325,6 @@
 					return(false);
 
 				}
-
-			}
-
-			// Get Second Functions
-			uint8_t Get_Second(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x00));
-
-				// End Function
-				return (_Data);
-
-			}
-
-			// Get Minute Functions
-			uint8_t Get_Minute(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x01));
-
-				// End Function
-				return (_Data);
-
-			}
-			
-			// Get Hour Functions
-			uint8_t Get_Hour(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x02));
-
-				// End Function
-				return (_Data);
-
-			}
-			
-			// Get Week Day Functions
-			uint8_t Get_Week_Day(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x03));
-
-				// End Function
-				return (_Data);
-
-			}
-			
-			// Get Date Functions
-			uint8_t Get_Date(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x04));
-
-				// End Function
-				return (_Data);
-
-			}
-			
-			// Get Month Functions
-			uint8_t Get_Month(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x05));
-
-				// End Function
-				return (_Data);
-
-			}
-
-			// Get Year Functions
-			uint8_t Get_Year(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x06));
-
-				// End Function
-				return (_Data);
 
 			}
 
@@ -565,91 +570,35 @@
 
 			}
 
+			// EEPROM Function
+			bool EEPROM(const bool _Method, const uint8_t _Address, uint8_t& _Value) {
 
-			// Read PUBLISH Register from EEPROM Function
-			uint32_t Read_Publish_Register(void) {
-				
-				// Declare Variables
-				uint32_t _Publish_Register = 0x00000000;
+				// Set Address
+				I2C_Functions::Write_Register(0x25, _Address, true);
 
-				// Read EEPROM
-				uint8_t _Publish_Register_MSB_2 = this->Read_EEPROM(__EEPROM_PUBLISH_MASK_MSB_2__);
-				uint8_t _Publish_Register_MSB_1 = this->Read_EEPROM(__EEPROM_PUBLISH_MASK_MSB_1__);
-				uint8_t _Publish_Register_LSB_2 = this->Read_EEPROM(__EEPROM_PUBLISH_MASK_LSB_2__);
-				uint8_t _Publish_Register_LSB_1 = this->Read_EEPROM(__EEPROM_PUBLISH_MASK_LSB_1__);
+				// Control for Method
+				if (_Method == READ) {
 
-				// Control for EEPROM
-				if (_Publish_Register_MSB_2 == 0x00 and _Publish_Register_MSB_1 == 0x00 and _Publish_Register_LSB_2 == 0x00 and _Publish_Register_LSB_1 == 0x00) {
+					// Set Read Command
+					I2C_Functions::Write_Register(0x27, 0x22, true);
 
-					// Define Default Values
-					uint8_t _Publish_Register_Default_MSB_2 = ((__PUBLISH_REGISTER_DEFAULT__ >> 24) & 0xFF);
-					uint8_t _Publish_Register_Default_MSB_1 = ((__PUBLISH_REGISTER_DEFAULT__ >> 16) & 0xFF);
-					uint8_t _Publish_Register_Default_LSB_2 = ((__PUBLISH_REGISTER_DEFAULT__ >> 8) & 0xFF);
-					uint8_t _Publish_Register_Default_LSB_1 = ((__PUBLISH_REGISTER_DEFAULT__ >> 0) & 0xFF);
-
-					// Set Default Value
-					this->Write_EEPROM(__EEPROM_PUBLISH_MASK_MSB_2__, _Publish_Register_Default_MSB_2);
-					this->Write_EEPROM(__EEPROM_PUBLISH_MASK_MSB_1__, _Publish_Register_Default_MSB_1);
-					this->Write_EEPROM(__EEPROM_PUBLISH_MASK_LSB_2__, _Publish_Register_Default_LSB_2);
-					this->Write_EEPROM(__EEPROM_PUBLISH_MASK_LSB_1__, _Publish_Register_Default_LSB_1);
-
-					// Set Default Value
-					_Publish_Register = __PUBLISH_REGISTER_DEFAULT__;
+					// Read Register
+					_Value = I2C_Functions::Read_Register(0x26);
 
 				} else {
 
-					// Set Default Value
-					_Publish_Register = (((uint32_t)_Publish_Register_MSB_2 << 24) | ((uint32_t)_Publish_Register_MSB_1 << 16) | ((uint32_t)_Publish_Register_LSB_2 << 8) | (uint32_t)_Publish_Register_LSB_1);
+					// Write Register
+					I2C_Functions::Write_Register(0x26, _Value, true);
+
+					// Set Write Command
+					I2C_Functions::Write_Register(0x27, 0x21, true);
 
 				}
 
-				// Return Value
-				return _Publish_Register;
+				// End Function
+				return(true);
 
 			}
-
-			// Read STOP Register from EEPROM Function
-			uint32_t Read_Stop_Register(void) {
-				
-				// Declare Variables
-				uint32_t _Stop_Register = 0x00000000;
-
-				// Read EEPROM
-				uint8_t _Stop_Register_MSB_2 = this->Read_EEPROM(__EEPROM_STOP_MASK_MSB_2__);
-				uint8_t _Stop_Register_MSB_1 = this->Read_EEPROM(__EEPROM_STOP_MASK_MSB_1__);
-				uint8_t _Stop_Register_LSB_2 = this->Read_EEPROM(__EEPROM_STOP_MASK_LSB_2__);
-				uint8_t _Stop_Register_LSB_1 = this->Read_EEPROM(__EEPROM_STOP_MASK_LSB_1__);
-
-				// Control for EEPROM
-				if (_Stop_Register_MSB_2 == 0x00 and _Stop_Register_MSB_1 == 0x00 and _Stop_Register_LSB_2 == 0x00 and _Stop_Register_LSB_1 == 0x00) {
-
-					// Define Default Values
-					uint8_t _Stop_Register_Default_MSB_2 = ((__STOP_REGISTER_DEFAULT__ >> 24) & 0xFF);
-					uint8_t _Stop_Register_Default_MSB_1 = ((__STOP_REGISTER_DEFAULT__ >> 16) & 0xFF);
-					uint8_t _Stop_Register_Default_LSB_2 = ((__STOP_REGISTER_DEFAULT__ >> 8) & 0xFF);
-					uint8_t _Stop_Register_Default_LSB_1 = ((__STOP_REGISTER_DEFAULT__ >> 0) & 0xFF);
-
-					// Set Default Value
-					this->Write_EEPROM(__EEPROM_STOP_MASK_MSB_2__, _Stop_Register_Default_MSB_2);
-					this->Write_EEPROM(__EEPROM_STOP_MASK_MSB_1__, _Stop_Register_Default_MSB_1);
-					this->Write_EEPROM(__EEPROM_STOP_MASK_LSB_2__, _Stop_Register_Default_LSB_2);
-					this->Write_EEPROM(__EEPROM_STOP_MASK_LSB_1__, _Stop_Register_Default_LSB_1);
-
-					// Set Default Value
-					_Stop_Register = __STOP_REGISTER_DEFAULT__;
-
-				} else {
-
-					// Set Default Value
-					_Stop_Register = (((uint32_t)_Stop_Register_MSB_2 << 24) | ((uint32_t)_Stop_Register_MSB_1 << 16) | ((uint32_t)_Stop_Register_LSB_2 << 8) | (uint32_t)_Stop_Register_LSB_1);
-
-				}
-
-				// Return Value
-				return _Stop_Register;
-
-			}
-
 
 	};
 
