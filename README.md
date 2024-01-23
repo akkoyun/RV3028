@@ -1,13 +1,12 @@
-# RV3028 Library <sup>V1.4</sup>
+# RV3028 Library <sup>V1.8</sup>
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/akkoyun/RV3028) ![arduino-library-badge](https://www.ardu-badge.com/badge/RV3028.svg?) ![Visits Badge](https://badges.pufler.dev/visits/akkoyun/RV3028) ![GitHub stars](https://img.shields.io/github/stars/akkoyun/RV3028?style=flat&logo=github) ![Updated Badge](https://badges.pufler.dev/updated/akkoyun/RV3028) ![PlatformIO Registry](https://badges.registry.platformio.org/packages/akkoyun/library/RV3028.svg) 
-[![Check Arduino](https://github.com/akkoyun/RV3028/actions/workflows/check-arduino.yml/badge.svg)](https://github.com/akkoyun/RV3028/actions/workflows/check-arduino.yml) [![Compile Examples](https://github.com/akkoyun/RV3028/actions/workflows/compile-examples.yml/badge.svg)](https://github.com/akkoyun/RV3028/actions/workflows/compile-examples.yml) [![Spell Check](https://github.com/akkoyun/RV3028/actions/workflows/spell-check.yml/badge.svg)](https://github.com/akkoyun/RV3028/actions/workflows/spell-check.yml)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/akkoyun/RV3028) ![arduino-library-badge](https://www.ardu-badge.com/badge/RV3028.svg?) ![Visits Badge](https://badges.pufler.dev/visits/akkoyun/RV3028) ![GitHub stars](https://img.shields.io/github/stars/akkoyun/RV3028?style=flat&logo=github) ![Updated Badge](https://badges.pufler.dev/updated/akkoyun/RV3028) ![PlatformIO Registry](https://badges.registry.platformio.org/packages/akkoyun/library/RV3028.svg)
 
-	Build - 01.04.00
+Build - 01.08.00
 
 ---
 
-**Abstract**
+## Abstract
 
 RV-3028-C7 is a SMT Real-Time Clock Module that incorporates an integrated CMOS circuit together with an XTAL. It operates under vacuum in a hermetically sealed ceramic package with metal lid.
 
@@ -15,7 +14,7 @@ The RV-3028-C7  real-time clock/calendar module with an automatic backup power s
 
 This ultra small RTC module has been specially designed for miniature and cost sensitive high volume applications.
 
-**Features**
+## Features
 
 * Extreme low power consumption: 45 nA @ 3 V
 * Wide operating voltage range: 1.1 V to 5.5 V
@@ -27,10 +26,6 @@ This ultra small RTC module has been specially designed for miniature and cost s
 * 43 bytes non-volatile user memory, 2 bytes user RAM
 * I²C-bus interface: 400 kHz
 * Automotive qualification according to AEC-Q200 available
-
-**Block Diagram**
-
-<center><img src="/Documents/images/Blockdiagram.png" width="600"></center></br>
 
 ---
 

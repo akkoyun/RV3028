@@ -9,19 +9,18 @@
 #ifndef __RV3028__
 #define __RV3028__
 
-	// Define Constants
-	#define READ		false
-	#define WRITE		true
-
-	// Define Arduino Library
+	// Include Arduino Library
 	#ifndef __Arduino__
 		#include <Arduino.h>
 	#endif
 
-	// Define I2C Functions Library
+	// Include I2C Functions Library
 	#ifndef __I2C_Functions__
 		#include <I2C_Functions.h>
 	#endif
+
+	// Include RV3028 Definitions
+	#include "Definitions.h"
 
 	// RV3028 Class
 	class RV3028 : private I2C_Functions {
@@ -29,24 +28,8 @@
 		// Private Context
 		private:
 
-			// HDC2010 Sensor Variable Structure.
-			struct RV3028_Struct {
-
-				// Multiplexer Structure.
-				struct Multiplexer_Struct{
-
-					// Multiplexer Enable Variable (if set true library make multiplexer).
-					bool Enable 			= false;
-
-					// Multiplexer Channel Variable (if not defined 0 channel make).
-					uint8_t Channel 		= 0;
-
-				} Multiplexer;
-
-			} Device;
-
 			// BCDtoDEC -- convert binary-coded decimal (BCD) to decimal
-			uint8_t BCDtoDEC(uint8_t _Value) {
+			uint8_t BCDtoDEC(const uint8_t _Value) {
 
 				// End Function
 				return (_Value >> 4) * 10 + (_Value & 0x0F);
@@ -54,52 +37,10 @@
 			}
 
 			// BCDtoDEC -- convert decimal to binary-coded decimal (BCD)
-			uint8_t DECtoBCD(uint8_t _Value) {
+			uint8_t DECtoBCD(const uint8_t _Value) {
 
-				// Calculate the tens digit
-				uint8_t _Tens = _Value / 10;
-
-				// Calculate the ones digit
-				uint8_t _Ones = _Value % 10;
-
-				// Combine the tens and ones digits into BCD format
-				uint8_t _BCD_Value = (_Tens << 4) | _Ones;
-
-				// Return the BCD value
-				return _BCD_Value;
-
-			}
-
-			// Get Second Functions
-			uint8_t Get_Second(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x00));
-
-				// End Function
-				return (_Data);
-
-			}
-
-			// Get Minute Functions
-			uint8_t Get_Minute(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x01));
-
-				// End Function
-				return (_Data);
-
-			}
-
-			// Get Hour Functions
-			uint8_t Get_Hour(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x02));
-
-				// End Function
-				return (_Data);
+				// Calculate and Return
+				return ((_Value / 10) << 4) | (_Value % 10);
 
 			}
 
@@ -107,43 +48,7 @@
 			uint8_t Get_Week_Day(void) {
 
 				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x03));
-
-				// End Function
-				return (_Data);
-
-			}
-
-			// Get Date Functions
-			uint8_t Get_Date(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x04));
-
-				// End Function
-				return (_Data);
-
-			}
-
-			// Get Month Functions
-			uint8_t Get_Month(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x05));
-
-				// End Function
-				return (_Data);
-
-			}
-
-			// Get Year Functions
-			uint8_t Get_Year(void) {
-
-				// Read Register
-				uint8_t _Data = this->BCDtoDEC(I2C_Functions::Read_Register(0x06));
-
-				// End Function
-				return (_Data);
+				return BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_WEEKDAY));
 
 			}
 
@@ -200,19 +105,21 @@
 				
 			}
 
-			// Set 24h Clock
-			void Set_24h_Clock(void) {
+			// Set Clock Type
+			void Set_Clock_Type(const bool _Type) {
 
-				// Set Register Bit
-				I2C_Functions::Clear_Register_Bit(0x10, 1, true);
+				// Control for Type
+				if (_Type) {
 
-			}
+					// Set Register Bit
+					I2C_Functions::Set_Register_Bit(RV3028_REGISTER_CONTROL_2, RV3028_BITMASK_12_24, true);
 
-			// Set 12h Clock
-			void Set_12h_Clock(void) {
+				} else {
 
-				// Clear Register Bit
-				I2C_Functions::Set_Register_Bit(0x10, 1, true);
+					// Clear Register Bit
+					I2C_Functions::Clear_Register_Bit(RV3028_REGISTER_CONTROL_2, RV3028_BITMASK_12_24, true);
+
+				}
 
 			}
 
@@ -220,7 +127,7 @@
 			void Disable_Trickle_Charger(void) {
 
 				// Clear Register Bit
-				I2C_Functions::Clear_Register_Bit(0x37, 5, true);
+				I2C_Functions::Clear_Register_Bit(RV3028_REGISTER_EEPROM_BACKUP, RV3028_BITMASK_TCE, true);
 
 			}
 
@@ -228,10 +135,7 @@
 			bool is_12h_Clock(void) {
 
 				// Read Register Bit
-				bool _Response = I2C_Functions::Read_Register_Bit(0x10, 1);
-
-				// End Function
-				return(_Response);
+				return(I2C_Functions::Read_Register_Bit(RV3028_REGISTER_CONTROL_2, RV3028_BITMASK_12_24));
 
 			}
 
@@ -239,7 +143,7 @@
 			void Clear_Interrupt(void) {
 
 				// Clear Register
-				I2C_Functions::Write_Register(0x0E, 0x00, true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_STATUS, 0x00, true);
 
 			}
 
@@ -250,12 +154,12 @@
 				if (_State) {
 
 					// Set Register Bit
-					I2C_Functions::Set_Register_Bit(0x10, 4, true);
+					I2C_Functions::Set_Register_Bit(RV3028_REGISTER_CONTROL_2, RV3028_BITMASK_TIE, true);
 
 				} else {
 
 					// Clear Register Bit
-					I2C_Functions::Clear_Register_Bit(0x10, 4, true);
+					I2C_Functions::Clear_Register_Bit(RV3028_REGISTER_CONTROL_2, RV3028_BITMASK_TIE, true);
 
 				}
 
@@ -265,10 +169,7 @@
 			bool Read_Timer_Interrupt_Flag(void) {
 
 				// Read Bit
-				bool _Response = I2C_Functions::Read_Register_Bit(0x0E, 3);
-
-				// End Function
-				return(_Response);
+				return(I2C_Functions::Read_Register_Bit(RV3028_REGISTER_STATUS, RV3028_BITMASK_TF));
 
 			}
 
@@ -276,7 +177,7 @@
 			void Clear_Timer_Interrupt_Flag(void) {
 
 				// Clear Bit
-				I2C_Functions::Clear_Register_Bit(0x0E, 3, true);
+				I2C_Functions::Clear_Register_Bit(RV3028_REGISTER_STATUS, RV3028_BITMASK_TF, true);
 
 			}
 
@@ -288,10 +189,6 @@
 
 			// Constructor
 			RV3028(const bool _Multiplexer_Enable = false, const uint8_t _Multiplexer_Channel = 0) : I2C_Functions(__I2C_Addr_RV3028C7__, _Multiplexer_Enable, _Multiplexer_Channel) {
-
-				// Set Multiplexer Variables
-				this->Device.Multiplexer.Enable = _Multiplexer_Enable;
-				this->Device.Multiplexer.Channel = _Multiplexer_Channel;
 
 			}
 
@@ -311,10 +208,10 @@
 					this->Clock_Out(true);
 
 					// Set 24h Format
-					this->Set_24h_Clock();
+					this->Set_Clock_Type(CLOCK_24H);
 
 					// Clear UNIX Time
-					this->Clear_UNIX_Time();
+					this->UNIX_Time(UNIX_CLEAR);
 
 					// End Function
 					return(true);
@@ -335,7 +232,14 @@
 				memset(this->Time_Stamp, '\0', 26);
 
 				// Handle TimeStamp
-				sprintf(this->Time_Stamp, "20%02hhu-%02hhu-%02hhu %02hhu:%02hhu:%02hhu", this->Get_Year(), this->Get_Month(), this->Get_Date(), this->Get_Hour(), this->Get_Minute(), this->Get_Second());
+				sprintf(this->Time_Stamp, "20%02hhu-%02hhu-%02hhu %02hhu:%02hhu:%02hhu", 
+					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_YEAR)), 	// Get Year
+					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_MONTH)), 	// Get Month
+					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_DAY)), 		// Get Date
+					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_HOUR)),		// Get Hour
+					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_MINUTE)), 	// Get Minute
+					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_SECOND))	// Get Second
+				);
 
 			}
 
@@ -346,35 +250,37 @@
 				uint8_t _DayofWeek = this->Day_of_Week(_Date, _Month, _Year);
 
 				// Update RTC Time
-				I2C_Functions::Write_Register(0x00, this->DECtoBCD(_Second), true);
-				I2C_Functions::Write_Register(0x01, this->DECtoBCD(_Minute), true);
-				I2C_Functions::Write_Register(0x02, this->DECtoBCD(_Hour), true);
-				I2C_Functions::Write_Register(0x03, this->DECtoBCD(_DayofWeek), true);
-				I2C_Functions::Write_Register(0x04, this->DECtoBCD(_Date), true);
-				I2C_Functions::Write_Register(0x05, this->DECtoBCD(_Month), true);
-				I2C_Functions::Write_Register(0x06, this->DECtoBCD(_Year), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_SECOND, this->DECtoBCD(_Second), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_MINUTE, this->DECtoBCD(_Minute), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_HOUR, this->DECtoBCD(_Hour), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_WEEKDAY, this->DECtoBCD(_DayofWeek), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_DAY, this->DECtoBCD(_Date), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_MONTH, this->DECtoBCD(_Month), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_YEAR, this->DECtoBCD(_Year), true);
 
 			}
 
-			// Clear UNIX Time Functions
-			void Clear_UNIX_Time(void) {
-
-				// Clear UNIX Time
-				I2C_Functions::Write_Register(0x1B, 0x00, true);
-				I2C_Functions::Write_Register(0x1C, 0x00, true);
-				I2C_Functions::Write_Register(0x1D, 0x00, true);
-				I2C_Functions::Write_Register(0x1E, 0x00, true);
-
-			}
-
-			// Get UNIX Time Functions
-			uint32_t Get_UNIX_Time(void) {
+			// UNIX Time Functions
+			uint32_t UNIX_Time(const bool _Method) {
 
 				// Declare UNIX Time Array Variable
 				uint8_t _UNIX_Time_Array[4] = {0x00, 0x00, 0x00, 0x00};
 
-				// Read UNIX Time
-				I2C_Functions::Read_Multiple_Register(0x1B, _UNIX_Time_Array, 4, true);
+				// Control for Method
+				if (_Method == UNIX_CLEAR) {
+
+					// Clear UNIX Time
+					I2C_Functions::Write_Register(RV3028_REGISTER_UNIX_TIME_0, _UNIX_Time_Array[0], true);
+					I2C_Functions::Write_Register(RV3028_REGISTER_UNIX_TIME_1, _UNIX_Time_Array[1], true);
+					I2C_Functions::Write_Register(RV3028_REGISTER_UNIX_TIME_2, _UNIX_Time_Array[2], true);
+					I2C_Functions::Write_Register(RV3028_REGISTER_UNIX_TIME_3, _UNIX_Time_Array[3], true);
+
+				} else {
+
+					// Read UNIX Time
+					I2C_Functions::Read_Multiple_Register(RV3028_REGISTER_UNIX_TIME, _UNIX_Time_Array, 4, true);
+
+				}
 
 				// Calculate UNIX Time
 				uint32_t _UNIX_Time = ((uint32_t)_UNIX_Time_Array[3] << 24) | ((uint32_t)_UNIX_Time_Array[2] << 16) | ((uint32_t)_UNIX_Time_Array[1] << 8) | _UNIX_Time_Array[0];
@@ -388,28 +294,28 @@
 			void Clock_Out(bool _State = true) {
 
 				// Read 35h Register
-				uint8_t _Register_35h = I2C_Functions::Read_Register(0x35);
+				uint8_t _REGISTER_EEPROM_CLKOUT = I2C_Functions::Read_Register(RV3028_REGISTER_EEPROM_CLKOUT);
 
 				// Control for State
 				if (_State) {
 
 					// Set CLKOE Bit
-					bitSet(_Register_35h, 7);
+					bitSet(_REGISTER_EEPROM_CLKOUT, RV3028_BITMASK_CLKOE);
 
 					// Set 1Hz Output
-					bitSet(_Register_35h, 2);
-					bitSet(_Register_35h, 0);
-					bitClear(_Register_35h, 1);
+					bitSet(_REGISTER_EEPROM_CLKOUT, RV3028_BITMASK_FD0);
+					bitClear(_REGISTER_EEPROM_CLKOUT, RV3028_BITMASK_FD1);
+					bitSet(_REGISTER_EEPROM_CLKOUT, RV3028_BITMASK_FD2);
 
 				} else {
 
 					// Clear CLKOE Bit
-					bitClear(_Register_35h, 7);
+					bitClear(_REGISTER_EEPROM_CLKOUT, RV3028_BITMASK_CLKOE);
 
 				}
 			
 				// Write 35h Register
-				I2C_Functions::Write_Register(0x35, _Register_35h, true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_EEPROM_CLKOUT, _REGISTER_EEPROM_CLKOUT, true);
 
 			}
 
@@ -426,35 +332,67 @@
 				this->Clear_Timer_Interrupt_Flag();
 
 				// Set Timer Value
-				I2C_Functions::Write_Register(0x0A, (_Value & 0xFF), true);
-				I2C_Functions::Write_Register(0x0B, (_Value >> 8), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_TIMER_VALUE_0, (_Value & 0xFF), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_TIMER_VALUE_1, (_Value >> 8), true);
 
 				// Read Control Register
-				uint8_t _CONTROL1 = I2C_Functions::Read_Register(0x0F);
+				uint8_t _CONTROL1 = I2C_Functions::Read_Register(RV3028_REGISTER_CONTROL_1);
 
 				// Set Timer Repeat Bit
-				if (_Repeat) {_CONTROL1 |= 1 << 7;} else {_CONTROL1 &= ~(1 << 7);}
+				if (_Repeat) {bitSet(_CONTROL1, RV3028_BITMASK_TRPT);} else {bitClear(_CONTROL1, RV3028_BITMASK_TRPT);}
 
 				// Set Timer Frequency
 				switch (_Frequency) {
-				
-					case 4096:
+
+					// 4096 Hz
+					case HZ_4096: {
+
+						// Clear Bits
 						_CONTROL1 &= ~3;
+
+						// End Switch
 						break;
 
-					case 64:
+					}
+
+					// 64 Hz
+					case HZ_64: {
+
+						// Clear Bits
 						_CONTROL1 &= ~3;
+
+						// Set Bit
 						_CONTROL1 |= 1;
+
+						// End Switch
 						break;
 
-					case 1:
+					}
+
+					// 1 Hz
+					case HZ_1: {
+
+						// Clear Bits
 						_CONTROL1 &= ~3;
+
+						// Set Bit
 						_CONTROL1 |= 2;
+
+						// End Switch
 						break;
 
-					case 60000:
+					}
+
+					// 1/60 Hz
+					case HZ_1_60: {
+
+						// Set Bits
 						_CONTROL1 |= 3;
+
+						// End Switch
 						break;
+
+					}
 
 				}
 
@@ -462,7 +400,7 @@
 				if (_Interrupt) this->Interrupt(true);
 
 				// Start Timer
-				if (_Start) _CONTROL1 |= (1 << 2);
+				if (_Start) bitSet(_CONTROL1, RV3028_BITMASK_TE); 
 
 				// Write Register
 				I2C_Functions::Write_Register(0x0F, _CONTROL1, true);
@@ -471,12 +409,12 @@
 				if (_Clock_Output) {
 
 					// Set Bit
-					I2C_Functions::Set_Register_Bit(0x12, 1, true);
+					I2C_Functions::Set_Register_Bit(RV3028_REGISTER_CLOCK_INT_MASK, 1, true);
 
 				} else {
 
 					// Clear Bit
-					I2C_Functions::Clear_Register_Bit(0x12, 1, true);
+					I2C_Functions::Clear_Register_Bit(RV3028_REGISTER_CLOCK_INT_MASK, 1, true);
 
 				}
 				
@@ -489,12 +427,12 @@
 				if (_Status) {
 
 					// Set Bit
-					I2C_Functions::Set_Register_Bit(0x0F, 2, true);
+					I2C_Functions::Set_Register_Bit(RV3028_REGISTER_CONTROL_1, RV3028_BITMASK_TE, true);
 
 				} else {
 
 					// Clear Bit
-					I2C_Functions::Clear_Register_Bit(0x0F, 2, true);
+					I2C_Functions::Clear_Register_Bit(RV3028_REGISTER_CONTROL_1, RV3028_BITMASK_TE, true);
 
 				}
 

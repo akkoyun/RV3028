@@ -1,8 +1,13 @@
+// Include Library
 #include "RV3028.h"
 
 // Declare Global Variable
 bool RTC_Interrupt = false;
 
+// Create RV3028 Object
+RV3028 RTC;
+
+// Setup
 void setup() {
 
 	// Serial Communication Start
@@ -12,9 +17,6 @@ void setup() {
 	Serial.println("       RTC Functions      ");
 	Serial.println("--------------------------");
 
-	// Set I2C Multiplexer
-	I2C.Set_Multiplexer(__I2C__TCA9548__Addr__ ,1);
-
     // Start RTC
 	RTC.Begin();
 
@@ -23,41 +25,42 @@ void setup() {
 
 	// Interrupt Definitions
 	cli();
-	PCICR	|= 0b00000111;	// Set All Interrupt
-	PCMSK0	|= 0b00010000;	// Timer Interrupt Definitions
+	PCICR |= (1 << PCIE0);
+	PCMSK0 |= (1 << PCINT0);
 	sei();
 
 }
 
+// Loop
 void loop() {
-
-	// Loop Delay
-	delay(1000);
 
     // Interrupt Routine
     if (RTC_Interrupt) {
-        
+
         // Report
         Serial.print("Interrupt - ");
 
-	    // Get Time
-    	Serial.println(RTC.Time_Stamp());
+		// Update Time Stamp
+		RTC.Update_Time_Stamp();
 
-        // Set Timer
-	    RTC.Set_Timer(false, 1, 10, true, true, true);
+	    // Print Time
+		Serial.println(RTC.Time_Stamp);
+
+        // Start Timer
+		RTC.Timer(true);
 
         // Set Variable
         RTC_Interrupt = false;
-        
+
     }
-    
 
 }
 
+// Interrupt Routine
 ISR(PCINT0_vect) {
 
-	// Control RTC Interrupt [PB4]
-	if ((PINB & (1 << PINB4)) == (1 << PINB4)) {
+	// Control RTC Interrupt [PB0]
+	if ((PINB & (1 << PINB0)) == (1 << PINB0)) {
 		
 		// Set Variable
 		RTC_Interrupt = true;
@@ -70,6 +73,6 @@ ISR(PCINT0_vect) {
 	}
 
 	// Interrupt Delay
-	delay(50);
+	delay(5);
 
 }

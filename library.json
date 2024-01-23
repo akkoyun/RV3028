@@ -1,6 +1,6 @@
 {
 	"name": "RV3028",
-	"version": "1.7.0",
+	"version": "1.8.0",
 	"keywords": "RV3028, RTC, Timer, UNIX, Clock, Alarm, Calendar, Counter, I2C",
 	"description": "Basic library for the RV-3028-C7 RTC",
 	"authors":
@@ -30,11 +30,6 @@
 		}
 	],
 	"examples": [
-		{
-			"name": "Get Day of Week",
-			"base": "examples/Get_Day_of_Week",
-			"files": ["Get_Day_of_Week.ino"]
-		},
 		{
 			"name": "Get UNIX Time",
 			"base": "examples/Get_UNIX_Time",

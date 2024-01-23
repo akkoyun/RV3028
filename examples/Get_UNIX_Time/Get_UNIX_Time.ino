@@ -1,4 +1,8 @@
+// Include Library
 #include "RV3028.h"
+
+// Create RV3028 Object
+RV3028 RTC;
 
 void setup() {
 
@@ -13,16 +17,16 @@ void setup() {
 	RTC.Begin();
 
     // Clear UNIX
-    RTC.Clear_UNIX_Time();
+    RTC.UNIX_Time(UNIX_CLEAR);
 
 }
 
 void loop() {
 
 	// Get Time
-	Serial.println(RTC.Get_UNIX_Time());
+	Serial.println(RTC.UNIX_Time(UNIX_GET));
 
     // Wait
-    delay(1);
+    delay(500);
 
 }

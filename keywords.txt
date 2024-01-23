@@ -5,35 +5,33 @@
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-RTC							KEYWORD1
+RV3028						KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 Begin						KEYWORD2
-Time_Stamp					KEYWORD2
-Get_Second					KEYWORD2
-Get_Minute					KEYWORD2
-Get_Hour					KEYWORD2
-Get_Week_Day				KEYWORD2
-Get_Date					KEYWORD2
-Get_Month					KEYWORD2
-Get_Year					KEYWORD2
+Update_Time_Stamp			KEYWORD2
 Set_Time					KEYWORD2
-Set_Second					KEYWORD2
-Set_Minute					KEYWORD2
-Set_Hour					KEYWORD2
-Set_Week_Day				KEYWORD2
-Set_Date					KEYWORD2
-Set_Month					KEYWORD2
-Set_Year					KEYWORD2
-Clear_UNIX_Time				KEYWORD2
-Get_UNIX_Time				KEYWORD2
-Enable_Timer				KEYWORD2
-Disable_Timer				KEYWORD2
+UNIX_Time	    			KEYWORD2
+Clock_Out					KEYWORD2
 Set_Timer					KEYWORD2
-Day_of_Week					KEYWORD2
+Timer						KEYWORD2
+Write_EEPROM				KEYWORD2
+Read_EEPROM					KEYWORD2
+EEPROM						KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
+Time_Stamp                  LITERAL1
+READ                        LITERAL1
+WRITE                       LITERAL1
+UNIX_GET                    LITERAL1
+UNIX_CLEAR                  LITERAL1
+CLOCK_12H                   LITERAL1
+CLOCK_24H                   LITERAL1
+HZ_4096                     LITERAL1
+HZ_64                       LITERAL1
+HZ_1                        LITERAL1
+HZ_1_60                     LITERAL1
