@@ -25,8 +25,52 @@
 	// RV3028 Class
 	class RV3028 : private I2C_Functions {
 
-		// Private Context
-		private:
+		// Public Context
+		public:
+
+			// Declare Time Stamp Variable
+			char Time_Stamp[26];
+
+			// Constructor
+			RV3028(const bool _Multiplexer_Enable = false, const uint8_t _Multiplexer_Channel = 0) : I2C_Functions(__I2C_Addr_RV3028C7__, _Multiplexer_Enable, _Multiplexer_Channel) {
+
+				// Clear Time Stamp Variable
+				memset(this->Time_Stamp, '\0', 26);
+
+			}
+
+			// Library Functions
+			bool Begin(void) {
+
+				// Start I2C
+				I2C_Functions::Begin();
+
+				// Control for Device
+				if (I2C_Functions::Variables.Device.Detect) {
+
+					// Ticke Charger Disable
+					this->Disable_Trickle_Charger();
+
+					// Set Clock Out
+					this->Clock_Out(true);
+
+					// Set 24h Format
+					this->Set_Clock_Type(CLOCK_24H);
+
+					// Clear UNIX Time
+					this->UNIX_Time(UNIX_CLEAR);
+
+					// End Function
+					return(true);
+
+				} else {
+
+					// End Function
+					return(false);
+
+				}
+
+			}
 
 			// BCDtoDEC -- convert binary-coded decimal (BCD) to decimal
 			uint8_t BCDtoDEC(const uint8_t _Value) {
@@ -56,10 +100,10 @@
 			uint8_t Day_of_Week(uint8_t _Day, uint8_t _Month, uint16_t _Year) {
 
 				// Declare Variables
-				int _mTable;
-				int _SummedDate;
-				int _DoW;
-				int _Leap;
+				int _mTable = 0;
+				int _SummedDate = 0;
+				int _DoW = 0;
+				int _Leap = 0;
 
 				// Leap Year Calculation
 				if((fmod(_Year,4) == 0 && fmod(_Year,100) != 0) || (fmod(_Year,400) == 0)) {_Leap = 1;} else {_Leap = 0;}
@@ -178,50 +222,6 @@
 
 				// Clear Bit
 				I2C_Functions::Clear_Register_Bit(RV3028_REGISTER_STATUS, RV3028_BITMASK_TF, true);
-
-			}
-
-		// Public Context
-		public:
-
-			// Declare Time Stamp Variable
-			char Time_Stamp[26];
-
-			// Constructor
-			RV3028(const bool _Multiplexer_Enable = false, const uint8_t _Multiplexer_Channel = 0) : I2C_Functions(__I2C_Addr_RV3028C7__, _Multiplexer_Enable, _Multiplexer_Channel) {
-
-			}
-
-			// Library Functions
-			bool Begin(void) {
-
-				// Start I2C
-				I2C_Functions::Begin();
-
-				// Control for Device
-				if (I2C_Functions::Variables.Device.Detect) {
-
-					// Ticke Charger Disable
-					this->Disable_Trickle_Charger();
-
-					// Set Clock Out
-					this->Clock_Out(true);
-
-					// Set 24h Format
-					this->Set_Clock_Type(CLOCK_24H);
-
-					// Clear UNIX Time
-					this->UNIX_Time(UNIX_CLEAR);
-
-					// End Function
-					return(true);
-
-				} else {
-
-					// End Function
-					return(false);
-
-				}
 
 			}
 
