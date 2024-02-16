@@ -10,7 +10,7 @@
 #define __RV3028__
 
 	// Include Arduino Library
-	#ifndef __Arduino__
+	#ifndef Arduino_h
 		#include <Arduino.h>
 	#endif
 
@@ -32,7 +32,7 @@
 			char Time_Stamp[26];
 
 			// Constructor
-			RV3028(const bool _Multiplexer_Enable = false, const uint8_t _Multiplexer_Channel = 0) : I2C_Functions(__I2C_Addr_RV3028C7__, _Multiplexer_Enable, _Multiplexer_Channel) {
+			explicit RV3028(const bool _Multiplexer_Enable = false, const uint8_t _Multiplexer_Channel = 0) : I2C_Functions(__I2C_Addr_RV3028C7__, _Multiplexer_Enable, _Multiplexer_Channel) {
 
 				// Clear Time Stamp Variable
 				memset(this->Time_Stamp, '\0', 26);
