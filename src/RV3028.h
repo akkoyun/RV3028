@@ -46,7 +46,7 @@
 				I2C_Functions::Begin();
 
 				// Control for Device
-				if (I2C_Functions::Variables.Device.Detect) {
+				if (I2C_Functions::Detect()) {
 
 					// Ticke Charger Disable
 					this->Disable_Trickle_Charger();
