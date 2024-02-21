@@ -1,6 +1,7 @@
-// EEPROM Constants
-#define READ			false
-#define WRITE			true
+// I2C Address Constants
+#ifndef __I2C_Addr_RV3028C7__
+    #define __I2C_Addr_RV3028C7__   0x52
+#endif
 
 // UNIX Time Constants
 #define UNIX_GET		false

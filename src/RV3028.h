@@ -28,14 +28,9 @@
 		// Public Context
 		public:
 
-			// Declare Time Stamp Variable
-			char Time_Stamp[26];
-
 			// Constructor
 			explicit RV3028(const bool _Multiplexer_Enable = false, const uint8_t _Multiplexer_Channel = 0) : I2C_Functions(__I2C_Addr_RV3028C7__, _Multiplexer_Enable, _Multiplexer_Channel) {
 
-				// Clear Time Stamp Variable
-				memset(this->Time_Stamp, '\0', 26);
 
 			}
 
@@ -73,7 +68,7 @@
 			}
 
 			// BCDtoDEC -- convert binary-coded decimal (BCD) to decimal
-			uint8_t BCDtoDEC(const uint8_t _Value) {
+			inline uint8_t BCDtoDEC(const uint8_t _Value) {
 
 				// End Function
 				return (_Value >> 4) * 10 + (_Value & 0x0F);
@@ -81,7 +76,7 @@
 			}
 
 			// BCDtoDEC -- convert decimal to binary-coded decimal (BCD)
-			uint8_t DECtoBCD(const uint8_t _Value) {
+			inline uint8_t DECtoBCD(const uint8_t _Value) {
 
 				// Calculate and Return
 				return ((_Value / 10) << 4) | (_Value % 10);
@@ -100,7 +95,7 @@
 			uint8_t Day_of_Week(uint8_t _Day, uint8_t _Month, uint16_t _Year) {
 
 				// Declare Variables
-				int _mTable = 0;
+				uint8_t _mTable = 0;
 				int _SummedDate = 0;
 				int _DoW = 0;
 				int _Leap = 0;
@@ -226,13 +221,10 @@
 			}
 
 			// Get Time Functions
-			void Update_Time_Stamp(void) {
-
-				// Clear TimeStamp Variable
-				memset(this->Time_Stamp, '\0', 26);
+			void Time_Stamp(char * _Time_Stamp = NULL) {
 
 				// Handle TimeStamp
-				sprintf(this->Time_Stamp, "20%02hhu-%02hhu-%02hhu %02hhu:%02hhu:%02hhu", 
+				sprintf(_Time_Stamp, "20%02hhu-%02hhu-%02hhu %02hhu:%02hhu:%02hhu", 
 					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_YEAR)), 	// Get Year
 					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_MONTH)), 	// Get Month
 					this->BCDtoDEC(I2C_Functions::Read_Register(RV3028_REGISTER_DAY)), 		// Get Date
@@ -419,6 +411,44 @@
 				}
 				
 			}
+			void Set_Timer(const uint16_t _Value) {
+
+				// Disable Timer
+				this->Timer(false);
+
+				// Disable Interrupt
+				this->Interrupt(false);
+
+				// Clear Interrupt Flag
+				this->Clear_Timer_Interrupt_Flag();
+
+				// Set Timer Value
+				I2C_Functions::Write_Register(RV3028_REGISTER_TIMER_VALUE_0, (_Value & 0xFF), true);
+				I2C_Functions::Write_Register(RV3028_REGISTER_TIMER_VALUE_1, (_Value >> 8), true);
+
+				// Read Control Register
+				uint8_t _CONTROL1 = I2C_Functions::Read_Register(RV3028_REGISTER_CONTROL_1);
+
+				// Disable Timer Repeat Bit
+				bitClear(_CONTROL1, RV3028_BITMASK_TRPT);
+
+				// Set Timer Frequency
+				_CONTROL1 &= ~3;
+				_CONTROL1 |= 2;
+
+				// Set Interrupt
+				this->Interrupt(true);
+
+				// Start Timer
+				bitSet(_CONTROL1, RV3028_BITMASK_TE); 
+
+				// Write Register
+				I2C_Functions::Write_Register(0x0F, _CONTROL1, true);
+	
+				// Clock Out
+				I2C_Functions::Set_Register_Bit(RV3028_REGISTER_CLOCK_INT_MASK, 1, true);
+				
+			}
 
 			// Enable Timer Functions
 			void Timer(bool _Status) {
@@ -472,6 +502,23 @@
 
 			}
 
+			// Write EEPROM Word Functions
+			bool Write_EEPROM_Word(const uint8_t _Address, const uint16_t _Value) {
+
+				// Control For Address Limit
+				if (_Address > 0x2A) return(false);
+
+				// Write MSB Register
+				this->Write_EEPROM(_Address, (_Value >> 8));
+
+				// Write LSB Register
+				this->Write_EEPROM(_Address + 1, (_Value & 0xFF));
+
+				// End Function
+				return(true);
+
+			}
+
 			// Read EEPROM Functions
 			uint8_t Read_EEPROM(const uint8_t _Address) {
 
@@ -508,33 +555,20 @@
 
 			}
 
-			// EEPROM Function
-			bool EEPROM(const bool _Method, const uint8_t _Address, uint8_t& _Value) {
+			// Read EEPROM Word Functions
+			uint16_t Read_EEPROM_Word(const uint8_t _Address) {
 
-				// Set Address
-				I2C_Functions::Write_Register(0x25, _Address, true);
+				// Control For Address Limit
+				if (_Address > 0x2A) return(false);
 
-				// Control for Method
-				if (_Method == READ) {
+				// Read MSB Register
+				uint8_t _MSB = this->Read_EEPROM(_Address);
 
-					// Set Read Command
-					I2C_Functions::Write_Register(0x27, 0x22, true);
+				// Read LSB Register
+				uint8_t _LSB = this->Read_EEPROM(_Address + 1);
 
-					// Read Register
-					_Value = I2C_Functions::Read_Register(0x26);
-
-				} else {
-
-					// Write Register
-					I2C_Functions::Write_Register(0x26, _Value, true);
-
-					// Set Write Command
-					I2C_Functions::Write_Register(0x27, 0x21, true);
-
-				}
-
-				// End Function
-				return(true);
+				// Return Word
+				return((_MSB << 8) | _LSB);
 
 			}
 
