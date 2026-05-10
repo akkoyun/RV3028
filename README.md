@@ -1,32 +1,182 @@
-# RV3028 Library <sup>V1.8</sup>
+# RV3028 Library (v2.0.1)
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/akkoyun/RV3028) ![arduino-library-badge](https://www.ardu-badge.com/badge/RV3028.svg?) ![Visits Badge](https://badges.pufler.dev/visits/akkoyun/RV3028) ![GitHub stars](https://img.shields.io/github/stars/akkoyun/RV3028?style=flat&logo=github) ![Updated Badge](https://badges.pufler.dev/updated/akkoyun/RV3028) ![PlatformIO Registry](https://badges.registry.platformio.org/packages/akkoyun/library/RV3028.svg)
+Ultra-low-RAM Arduino/PlatformIO library for the Micro Crystal RV-3028-C7 RTC.
 
-Build - 01.08.00
+## Highlights
 
----
+* Always ultra-low-RAM design: no internal timestamp buffer per instance
+* Datasheet-aligned time validation helpers (PORF/CLKF)
+* Safe input validation for time and timer setup
+* EEPROM read/write helpers with busy handling
+* 12h/24h hour conversion handled correctly
 
-## Abstract
+## Requirements
 
-RV-3028-C7 is a SMT Real-Time Clock Module that incorporates an integrated CMOS circuit together with an XTAL. It operates under vacuum in a hermetically sealed ceramic package with metal lid.
+* Arduino framework
+* I2C_Functions dependency
 
-The RV-3028-C7  real-time clock/calendar module with an automatic backup power switchover circuit is optimized for extreme low power consumption. It provides full RTC function with programmable counters, alarm, selectable interrupt and clock output functions and also a 32-bit UNIX Time counter. The internal EEPROM memory hosts all configuration settings and allows for additional user memory. An EEPROM Offset value allows compensating the frequency deviation of the 32.768 kHz clock.
+## Installation
 
-This ultra small RTC module has been specially designed for miniature and cost sensitive high volume applications.
+### Arduino IDE
 
-## Features
+Install `RV3028` from Arduino Library Manager, then install dependency `I2C_Functions`.
 
-* Extreme low power consumption: 45 nA @ 3 V
-* Wide operating voltage range: 1.1 V to 5.5 V
-* Time accuracy: Factory calibrated to ±1 ppm @ 25°C
-* Backup Switch and Trickle Charge
-* Provides year, month, date, weekday, hours, minutes and seconds
-* 32 bit UNIX time counter
-* External event input detection with time stamping
-* 43 bytes non-volatile user memory, 2 bytes user RAM
-* I²C-bus interface: 400 kHz
-* Automotive qualification according to AEC-Q200 available
+### PlatformIO
 
----
+```ini
+lib_deps =
+  akkoyun/RV3028@^2.0.1
+```
 
-[![Support me](https://img.shields.io/badge/Support-PATREON-GREEN.svg)](https://www.patreon.com/bePatron?u=62967889) ![Twitter Follow](https://img.shields.io/twitter/follow/gunceakkoyun?style=social) ![YouTube Channel Views](https://img.shields.io/youtube/channel/views/UCIguQGdaBT1GnnVMz5qAZ2Q?style=social) ![Repos Badge](https://badges.pufler.dev/repos/akkoyun) [![E-Mail](https://img.shields.io/badge/E_Mail-Mehmet_Gunce_Akkoyun-blue.svg)](mailto:akkoyun@me.com)
+## Quick Start
+
+```cpp
+#include "RV3028.h"
+
+RV3028 RTC;
+char ts[RV3028_Cfg::TIMESTAMP_SIZE];
+
+void setup() {
+  Serial.begin(115200);
+
+  if (!RTC.Begin()) {
+    while (1);
+  }
+
+  if (!RTC.Set_Time(0, 0, 12, 10, 5, 26)) {
+    while (1);
+  }
+}
+
+void loop() {
+  RTC.Get_Time(ts, sizeof(ts));
+  Serial.println(ts);
+  delay(1000);
+}
+```
+
+## Public API Reference
+
+### Construction and Initialization
+
+* `RV3028(bool muxEnable = false, uint8_t muxChannel = 0)`
+  * Creates an RTC object.
+* `bool Begin(bool applyDefaultConfig = false)`
+  * Starts I2C and checks RTC presence.
+  * If `applyDefaultConfig` is `true`, applies 24h mode, disables trickle charger, enables 1 Hz CLKOUT.
+
+### Clock Configuration
+
+* `void Set_Clock_Type(bool type)`
+  * `true` = 12h mode, `false` = 24h mode.
+* `bool is_12h_Clock()`
+  * Returns current hour format.
+* `void Disable_Trickle_Charger()`
+  * Clears trickle charger bit in backup EEPROM RAM mirror.
+* `void Clock_Out(bool state = true)`
+  * Enables/disables normal CLKOUT output (configured to 1 Hz when enabled).
+
+### Interrupt and Status
+
+* `void Clear_Interrupt()`
+  * Clears status flags.
+* `void Interrupt(bool state)`
+  * Enables/disables timer interrupt routing.
+* `bool Read_Timer_Interrupt_Flag()`
+  * Reads `TF` flag.
+* `void Clear_Timer_Interrupt_Flag()`
+  * Clears `TF` flag.
+* `uint8_t Read_Status()`
+  * Returns raw status register.
+* `bool Power_On_Reset_Detected()`
+  * Returns `PORF` state.
+* `bool Clock_Failure_Detected()`
+  * Returns `CLKF` state.
+* `void Clear_Power_On_Reset_Flag()`
+  * Clears `PORF`.
+* `void Clear_Clock_Failure_Flag()`
+  * Clears `CLKF`.
+* `bool Is_Time_Valid()`
+  * Returns `true` only if `PORF` and `CLKF` are both clear.
+
+### Time Functions
+
+* `uint8_t Get_Week_Day()`
+  * Reads weekday counter value (`0..6`).
+* `uint8_t Day_of_Week(uint8_t day, uint8_t month, uint16_t year)`
+  * Calculates weekday for a date.
+* `bool Set_Time(uint8_t second, uint8_t minute, uint8_t hour, uint8_t date, uint8_t month, uint8_t year)`
+  * Writes calendar/time registers.
+  * `year` is 2-digit (`0..99` -> `2000..2099`).
+  * Validates ranges and leap-year day constraints.
+* `void Get_Time(char* buffer, uint8_t size)`
+  * Burst-reads time and formats as `20YY-MM-DD HH:MM:SS`.
+  * Caller must provide buffer.
+
+### UNIX Counter
+
+* `uint32_t Get_UNIX_Time()`
+  * Reads UNIX counter registers.
+* `void Clear_UNIX_Time()`
+  * Clears UNIX counter registers.
+* `uint32_t UNIX_Time(bool method)`
+  * Legacy compatibility wrapper.
+  * `UNIX_CLEAR` clears counter and returns current value.
+  * `UNIX_GET` returns current value.
+
+### Timer
+
+* `bool Set_Timer(bool repeat, uint16_t frequency, uint16_t value, bool interrupt, bool start, bool clockOutput)`
+  * Configures countdown timer.
+  * `value` valid range: `1..4095`.
+  * Frequency constants:
+    * `RV3028_Timer_Freq::FREQ_4096HZ`
+    * `RV3028_Timer_Freq::FREQ_64HZ`
+    * `RV3028_Timer_Freq::FREQ_1HZ`
+    * `RV3028_Timer_Freq::FREQ_1_60HZ`
+* `bool Set_Timer(uint16_t value)`
+  * One-shot convenience overload at 1 Hz.
+* `void Timer(bool status)`
+  * Starts/stops timer by TE bit.
+
+### EEPROM Access
+
+* `bool Write_EEPROM(uint8_t address, uint8_t value)`
+* `bool Write_EEPROM_Word(uint8_t address, uint16_t value)`
+* `bool Read_EEPROM(uint8_t address, uint8_t& out)`
+* `bool Read_EEPROM_Word(uint8_t address, uint16_t& out)`
+
+Address limits follow library config (`0x00..0x2A`, word reads/writes require valid consecutive bytes).
+
+## Examples
+
+The library includes at least five examples:
+
+* `examples/Set_RTC`
+* `examples/Get_UNIX_Time`
+* `examples/RTC_Timer`
+* `examples/Status_And_Validity`
+* `examples/EEPROM_Read_Write`
+
+## RAM Analysis (ATmega2560, PlatformIO)
+
+Measured with PlatformIO (board: `megaatmega2560`, framework: `arduino`) using this library v2.0.1.
+
+| Example | RAM Used | RAM Total | RAM % | Flash Used |
+| --- | ---: | ---: | ---: | ---: |
+| Set_RTC | 534 B | 8192 B | 6.5% | 7538 B |
+| Get_UNIX_Time | 482 B | 8192 B | 5.9% | 5788 B |
+| RTC_Timer | 547 B | 8192 B | 6.7% | 7762 B |
+| Status_And_Validity | 548 B | 8192 B | 6.7% | 6064 B |
+| EEPROM_Read_Write | 594 B | 8192 B | 7.3% | 6528 B |
+
+The table is filled from real PlatformIO build output in this repository.
+
+## Changelog
+
+### 2.0.1
+
+* Unified always-ultra-low-RAM architecture
+* Removed internal timestamp storage model
+* Strengthened validation and status helpers
+* Added additional examples and expanded documentation

@@ -13,20 +13,23 @@ void setup() {
 	Serial.println("       RTC Functions      ");
 	Serial.println("--------------------------");
 
-    // Start RTC
-	RTC.Begin();
+	// Start RTC — returns false if device not found on I2C bus
+	if (!RTC.Begin()) {
+		Serial.println("RV3028 not found!");
+		while (1);
+	}
 
-    // Clear UNIX
-    RTC.UNIX_Time(UNIX_CLEAR);
+	// Clear UNIX counter (call explicitly when needed — Begin() no longer auto-clears)
+	RTC.Clear_UNIX_Time();
 
 }
 
 void loop() {
 
-	// Get Time
-	Serial.println(RTC.UNIX_Time(UNIX_GET));
+	// Get and print UNIX time counter
+	Serial.println(RTC.Get_UNIX_Time());
 
-    // Wait
-    delay(500);
+	// Wait
+	delay(500);
 
 }

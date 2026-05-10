@@ -1,8 +1,8 @@
 {
 	"name": "RV3028",
-	"version": "1.9.2",
+	"version": "2.0.1",
 	"keywords": "RV3028, RTC, Timer, UNIX, Clock, Alarm, Calendar, Counter, I2C",
-	"description": "Basic library for the RV-3028-C7 RTC",
+	"description": "Ultra-low-RAM library for the RV-3028-C7 RTC",
 	"authors":
 	{
 		"name": "Mehmet Gunce Akkoyun",
@@ -20,7 +20,7 @@
 	"repository":
 	{
 		"type": "git",
-		"url": "https://github.com/akkoyun/RV3028C7.git"
+		"url": "https://github.com/akkoyun/RV3028.git"
 	},
 	"dependencies":
 	[
@@ -34,6 +34,16 @@
 			"name": "Get UNIX Time",
 			"base": "examples/Get_UNIX_Time",
 			"files": ["Get_UNIX_Time.ino"]
+		},
+		{
+			"name": "Status And Validity",
+			"base": "examples/Status_And_Validity",
+			"files": ["Status_And_Validity.ino"]
+		},
+		{
+			"name": "EEPROM Read Write",
+			"base": "examples/EEPROM_Read_Write",
+			"files": ["EEPROM_Read_Write.ino"]
 		},
 		{
 			"name": "RTC Timer",

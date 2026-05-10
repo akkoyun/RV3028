@@ -11,20 +11,37 @@ RV3028						KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 Begin						KEYWORD2
-Update_Time_Stamp			KEYWORD2
+Set_Clock_Type				KEYWORD2
+is_12h_Clock				KEYWORD2
+Disable_Trickle_Charger		KEYWORD2
+Clear_Interrupt				KEYWORD2
+Interrupt					KEYWORD2
+Read_Timer_Interrupt_Flag	KEYWORD2
+Clear_Timer_Interrupt_Flag	KEYWORD2
+Read_Status					KEYWORD2
+Power_On_Reset_Detected		KEYWORD2
+Clock_Failure_Detected		KEYWORD2
+Clear_Power_On_Reset_Flag	KEYWORD2
+Clear_Clock_Failure_Flag	KEYWORD2
+Is_Time_Valid				KEYWORD2
+Get_Week_Day				KEYWORD2
+Day_of_Week				KEYWORD2
 Set_Time					KEYWORD2
+Get_Time					KEYWORD2
+Get_UNIX_Time				KEYWORD2
+Clear_UNIX_Time				KEYWORD2
 UNIX_Time	    			KEYWORD2
 Clock_Out					KEYWORD2
 Set_Timer					KEYWORD2
 Timer						KEYWORD2
 Write_EEPROM				KEYWORD2
+Write_EEPROM_Word			KEYWORD2
 Read_EEPROM					KEYWORD2
-EEPROM						KEYWORD2
+Read_EEPROM_Word			KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
 #######################################
-Time_Stamp                  LITERAL1
 READ                        LITERAL1
 WRITE                       LITERAL1
 UNIX_GET                    LITERAL1
@@ -35,3 +52,7 @@ HZ_4096                     LITERAL1
 HZ_64                       LITERAL1
 HZ_1                        LITERAL1
 HZ_1_60                     LITERAL1
+FREQ_4096HZ                 LITERAL1
+FREQ_64HZ                   LITERAL1
+FREQ_1HZ                    LITERAL1
+FREQ_1_60HZ                 LITERAL1

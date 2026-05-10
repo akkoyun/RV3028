@@ -1,11 +1,14 @@
 // Include Library
 #include "RV3028.h"
 
-// Declare Global Variable
-bool RTC_Interrupt = false;
+// volatile: prevents compiler from optimizing away the ISR→loop handshake
+volatile bool RTC_Interrupt = false;
 
 // Create RV3028 Object
 RV3028 RTC;
+
+// Caller-managed timestamp buffer (ultra low RAM library design)
+char Time_Buffer[RV3028_Cfg::TIMESTAMP_SIZE];
 
 // Setup
 void setup() {
@@ -17,15 +20,21 @@ void setup() {
 	Serial.println("       RTC Functions      ");
 	Serial.println("--------------------------");
 
-    // Start RTC
-	RTC.Begin();
+	// Start RTC — returns false if device not found on I2C bus
+	if (!RTC.Begin()) {
+		Serial.println("RV3028 not found!");
+		while (1);
+	}
 
-    // Set Timer
-    RTC.Set_Timer(false, 1, 10, true, true, true);
+	// Configure timer: one-shot, 1 Hz, 10-count (10 s), interrupt + CLKOUT enabled
+	if (!RTC.Set_Timer(false, RV3028_Timer_Freq::FREQ_1HZ, 10, true, true, true)) {
+		Serial.println("Set_Timer failed");
+		while (1);
+	}
 
-	// Interrupt Definitions
+	// Enable pin-change interrupt on PB0 (CLKOUT → Arduino pin 53 on Mega)
 	cli();
-	PCICR |= (1 << PCIE0);
+	PCICR  |= (1 << PCIE0);
 	PCMSK0 |= (1 << PCINT0);
 	sei();
 
@@ -34,45 +43,25 @@ void setup() {
 // Loop
 void loop() {
 
-    // Interrupt Routine
-    if (RTC_Interrupt) {
+	if (RTC_Interrupt) {
 
-        // Report
-        Serial.print("Interrupt - ");
+		// Read time via burst (race-condition safe)
+		RTC.Get_Time(Time_Buffer, sizeof(Time_Buffer));
 
-		// Update Time Stamp
-		RTC.Update_Time_Stamp();
+		Serial.print("Interrupt - ");
+		Serial.println(Time_Buffer);
 
-	    // Print Time
-		Serial.println(RTC.Time_Stamp);
-
-        // Start Timer
+		// Clear TF flag then restart one-shot timer
+		RTC.Clear_Timer_Interrupt_Flag();
 		RTC.Timer(true);
 
-        // Set Variable
-        RTC_Interrupt = false;
-
-    }
-
-}
-
-// Interrupt Routine
-ISR(PCINT0_vect) {
-
-	// Control RTC Interrupt [PB0]
-	if ((PINB & (1 << PINB0)) == (1 << PINB0)) {
-		
-		// Set Variable
-		RTC_Interrupt = true;
-
-	} else {
-		
-		// Set Variable
 		RTC_Interrupt = false;
 
 	}
 
-	// Interrupt Delay
-	delay(5);
+}
 
+// Pin-change ISR — keep minimal: set flag only, no I2C, no delay()
+ISR(PCINT0_vect) {
+	RTC_Interrupt = (bool)(PINB & (1 << PINB0));
 }
